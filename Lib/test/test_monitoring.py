@@ -821,9 +821,18 @@ class ExceptionMonitoringTest(CheckEvents):
             yield 1
             return 2
 
-        def implicit_stop_iteration():
-            for _ in gen():
+        def run_iter(i):
+            for _ in i:
                 pass
+
+        def implicit_stop_iteration():
+            run_iter(gen())
+
+        # _Py_SpecializeForIter doesn't support PySetIter_Type, so calling
+        # run_iter() like this will cause a failed specialization. The adaptive
+        # backoff then gives us 3 unspecialzed executions of the FOR_ITER in
+        # question, enough to demonstrate the bug.
+        run_iter({1})
 
         self.check_events(implicit_stop_iteration, [("raise", StopIteration)], recorders=(StopiterationRecorder,))
 
