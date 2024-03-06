@@ -927,6 +927,7 @@ DEF_MAKE_RULE
 DEF_MAKE_ALL_RULE
 JIT_STENCILS_H
 REGEN_JIT_COMMAND
+GIL_DISABLED
 ABIFLAGS
 LN
 MKDIR_P
@@ -8057,12 +8058,16 @@ fi
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $disable_gil" >&5
 printf "%s\n" "$disable_gil" >&6; }
 
+
+GIL_DISABLED=""
+
 if test "$disable_gil" = "yes"
 then
 
 printf "%s\n" "#define Py_GIL_DISABLED 1" >>confdefs.h
 
   # Add "t" for "threaded"
+  GIL_DISABLED="yes"
   ABIFLAGS="${ABIFLAGS}t"
 fi
 

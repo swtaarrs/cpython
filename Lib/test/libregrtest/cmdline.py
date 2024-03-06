@@ -349,6 +349,10 @@ def _create_parser():
                        help='remove old test_python_* directories')
     group.add_argument('--bisect', action='store_true',
                        help='if some tests fail, run test.bisect_cmd on them')
+    # This option is used to disable the GIL in worker processes until the test
+    # runner is stable under -Xgil=0.
+    group.add_argument('--disable-gil', action='store_true',
+                       help='Pass -Xgil=0 to worker processes.')
     group.add_argument('--dont-add-python-opts', dest='_add_python_opts',
                        action='store_false',
                        help="internal option, don't use it")

@@ -78,6 +78,8 @@ MKDIR_P=	@MKDIR_P@
 
 MAKESETUP=      $(srcdir)/Modules/makesetup
 
+GIL_DISABLED=   @GIL_DISABLED@
+
 # Compiler options
 OPT=		@OPT@
 BASECFLAGS=	@BASECFLAGS@
@@ -2024,6 +2026,7 @@ TESTOPTS=	$(EXTRATESTOPTS)
 TESTPYTHON=	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(TESTPYTHONOPTS)
 TESTRUNNER=	$(TESTPYTHON) -m test
 TESTTIMEOUT=
+GIL_DISABLED_IGNORELIST= $(srcdir)/Lib/test/gil_disabled_failing_tests.txt
 
 # Remove "test_python_*" directories of previous failed test jobs.
 # Pass TESTOPTS options because it can contain --tempdir option.
@@ -2037,6 +2040,10 @@ cleantest: all
 .PHONY: test
 test: all
 	$(TESTRUNNER) --fast-ci --timeout=$(TESTTIMEOUT) $(TESTOPTS)
+ifeq ($(GIL_DISABLED),yes)
+	$(TESTRUNNER) --fast-ci --timeout=$(TESTTIMEOUT) $(TESTOPTS) \
+		--disable-gil --ignorefile=$(GIL_DISABLED_IGNORELIST)
+endif
 
 # Run the test suite for both architectures in a Universal build on OSX.
 # Must be run on an Intel box.
@@ -2095,6 +2102,10 @@ buildbottest: all
 		pybuildbot.identify "CC='$(CC)'" "CXX='$(CXX)'"; \
 	fi
 	$(TESTRUNNER) --slow-ci --timeout=$(TESTTIMEOUT) $(TESTOPTS)
+ifeq ($(GIL_DISABLED),yes)
+	$(TESTRUNNER) --slow-ci --timeout=$(TESTTIMEOUT) $(TESTOPTS) \
+		--disable-gil --ignorefile=$(GIL_DISABLED_IGNORELIST)
+endif
 
 .PHONY: pythoninfo
 pythoninfo: all

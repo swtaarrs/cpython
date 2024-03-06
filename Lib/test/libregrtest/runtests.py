@@ -100,6 +100,7 @@ class RunTests:
     python_cmd: tuple[str, ...] | None
     randomize: bool
     random_seed: int | str
+    disable_gil: bool
 
     def copy(self, **override) -> 'RunTests':
         state = dataclasses.asdict(self)
@@ -146,6 +147,8 @@ class RunTests:
 
     def create_python_cmd(self) -> list[str]:
         python_opts = support.args_from_interpreter_flags()
+        if self.disable_gil:
+            python_opts.append("-Xgil=0")
         if self.python_cmd is not None:
             executable = self.python_cmd
             # Remove -E option, since --python=COMMAND can set PYTHON

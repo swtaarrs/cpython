@@ -120,6 +120,7 @@ class Regrtest:
         self.coverage: bool = ns.trace
         self.coverage_dir: StrPath | None = ns.coverdir
         self.tmp_dir: StrPath | None = ns.tempdir
+        self.disable_gil: bool = ns.disable_gil
 
         # Randomize
         self.randomize: bool = ns.randomize
@@ -480,6 +481,7 @@ class Regrtest:
             python_cmd=self.python_cmd,
             randomize=self.randomize,
             random_seed=self.random_seed,
+            disable_gil=self.disable_gil,
         )
 
     def _run_tests(self, selected: TestTuple, tests: TestList | None) -> int:
